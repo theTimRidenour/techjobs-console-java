@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LaunchCode
@@ -51,7 +52,10 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
-        return allJobs;
+        ArrayList<HashMap<String, String>> allJobsCopy = new ArrayList<>();
+        allJobsCopy = allJobs;
+
+        return allJobsCopy;
     }
 
     /**
@@ -65,18 +69,48 @@ public class JobData {
      * @param value Value of teh field to search for
      * @return List of all jobs matching the criteria
      */
+    public static ArrayList<HashMap<String, String >> findByValue(String field, String term) {
+
+        // load data, if not already loaded
+        loadData();
+
+        String searchTerm = term.toLowerCase();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for(HashMap<String, String> job : allJobs) {
+
+            for(Map.Entry<String, String> search : job.entrySet()) {
+
+                String value = search.getValue();
+                String searchValue = value.toLowerCase();
+
+                if(searchValue.contains(searchTerm)) {
+
+                    jobs.add(job);
+                    break;
+                }
+            }
+        }
+
+        return jobs;
+    }
+
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
 
         // load data, if not already loaded
         loadData();
+
+        String searchValue = value.toLowerCase();
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
 
             String aValue = row.get(column);
+            String searchAValue = aValue.toLowerCase();
 
-            if (aValue.contains(value)) {
+            if (searchAValue.contains(searchValue)) {
                 jobs.add(row);
             }
         }
